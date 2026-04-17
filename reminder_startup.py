@@ -98,7 +98,7 @@ def show_reminder_window(reminder):
     btn_row.pack(fill="x")
 
     _btn(btn_row, "Snooze  (remind next startup)", snooze,
-         bg=BG_CARD, fg=FG_DIM, side="left")
+         bg=BG_CARD, fg=FG, side="left")
     _btn(btn_row, "  Done  ✓  ", done,
          bg=ACCENT, fg=FG, side="right")
 
