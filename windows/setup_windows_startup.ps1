@@ -9,15 +9,16 @@
 $ErrorActionPreference = "Stop"
 
 $ScriptDir     = Split-Path -Parent $MyInvocation.MyCommand.Definition
-$StartupScript = Join-Path $ScriptDir "reminder_startup.py"
-$VenvDir       = Join-Path $ScriptDir ".venv"
+$RepoDir       = Split-Path -Parent $ScriptDir   # repo root (parent of windows/)
+$StartupScript = Join-Path $RepoDir "reminder_startup.py"
+$VenvDir       = Join-Path $RepoDir ".venv"
 $StartupFolder = [System.Environment]::GetFolderPath("Startup")
 $BatchFile     = Join-Path $StartupFolder "run_reminders.bat"
 
 # ── sanity check ───────────────────────────────────────────────────────────────
 
 if (-not (Test-Path $StartupScript)) {
-    Write-Error "reminder_startup.py not found at: $StartupScript`nRun this script from the same folder."
+    Write-Error "reminder_startup.py not found at: $StartupScript`nMake sure the windows\ folder is inside the repo root."
     exit 1
 }
 

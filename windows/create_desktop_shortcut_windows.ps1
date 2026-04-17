@@ -8,16 +8,17 @@
 $ErrorActionPreference = "Stop"
 
 $ScriptDir   = Split-Path -Parent $MyInvocation.MyCommand.Definition
-$GuiScript   = Join-Path $ScriptDir "reminder_manager_gui.py"
-$VenvPythonw = Join-Path $ScriptDir ".venv\Scripts\pythonw.exe"
-$VenvPython  = Join-Path $ScriptDir ".venv\Scripts\python.exe"
+$RepoDir     = Split-Path -Parent $ScriptDir   # repo root (parent of windows/)
+$GuiScript   = Join-Path $RepoDir "reminder_manager_gui.py"
+$VenvPythonw = Join-Path $RepoDir ".venv\Scripts\pythonw.exe"
+$VenvPython  = Join-Path $RepoDir ".venv\Scripts\python.exe"
 $Desktop     = [System.Environment]::GetFolderPath("Desktop")
 $ShortcutPath = Join-Path $Desktop "Reminder Manager.lnk"
 
 # ── sanity check ───────────────────────────────────────────────────────────────
 
 if (-not (Test-Path $GuiScript)) {
-    Write-Error "reminder_manager_gui.py not found at: $GuiScript`nRun this script from the same folder."
+    Write-Error "reminder_manager_gui.py not found at: $GuiScript`nMake sure the windows\ folder is inside the repo root."
     exit 1
 }
 
@@ -53,7 +54,7 @@ $Shortcut = $Shell.CreateShortcut($ShortcutPath)
 
 $Shortcut.TargetPath       = $Launcher
 $Shortcut.Arguments        = "`"$GuiScript`""
-$Shortcut.WorkingDirectory = $ScriptDir
+$Shortcut.WorkingDirectory = $RepoDir
 $Shortcut.Description      = "Open the Reminder Manager"
 $Shortcut.WindowStyle      = 1   # normal window
 

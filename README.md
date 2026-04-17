@@ -9,8 +9,8 @@ No third-party dependencies required (tkinter ships with Python on Windows). `tk
 | `reminder_manager.py` | Interactive **terminal** UI — create, edit, delete reminders |
 | `reminder_manager_gui.py` | Interactive **GUI** UI — same features in a windowed interface |
 | `reminder_startup.py` | Startup script — checks due reminders and shows popup windows |
-| `create_desktop_shortcut_mac.zsh` | Creates a `Reminder Manager.app` on the macOS Desktop |
-| `create_desktop_shortcut_windows.ps1` | Creates a `Reminder Manager` shortcut on the Windows Desktop |
+| `macos/` | macOS setup, uninstall, and desktop shortcut scripts |
+| `windows/` | Windows setup, uninstall, and desktop shortcut scripts |
 
 ## Quick start
 
@@ -33,8 +33,8 @@ Use the menu to add reminders. Each reminder has:
 ### macOS — install
 
 ```zsh
-chmod +x setup_macos_startup.zsh
-./setup_macos_startup.zsh
+chmod +x macos/setup_macos_startup.zsh
+./macos/setup_macos_startup.zsh
 ```
 
 Creates and loads a launchd agent (`~/Library/LaunchAgents/`). Logs go to `~/Library/Logs/SteveReminderProg/`.
@@ -48,8 +48,8 @@ Creates and loads a launchd agent (`~/Library/LaunchAgents/`). Logs go to `~/Lib
 ### macOS — uninstall
 
 ```zsh
-chmod +x uninstall_macos_startup.zsh
-./uninstall_macos_startup.zsh
+chmod +x macos/uninstall_macos_startup.zsh
+./macos/uninstall_macos_startup.zsh
 ```
 
 Unloads the agent, removes the plist, and optionally deletes logs and reminder data.
@@ -64,7 +64,7 @@ Open PowerShell in the project folder and run:
 # Allow local scripts (only needed once per machine)
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 
-.\setup_windows_startup.ps1
+.\windows\setup_windows_startup.ps1
 ```
 
 Creates `run_reminders.bat` in your Startup folder (`shell:startup`). Uses `pythonw.exe` to suppress the console window.
@@ -72,7 +72,7 @@ Creates `run_reminders.bat` in your Startup folder (`shell:startup`). Uses `pyth
 ### Windows — uninstall
 
 ```powershell
-.\uninstall_windows_startup.ps1
+.\windows\uninstall_windows_startup.ps1
 ```
 
 Removes the startup launcher and optionally deletes saved reminder data.
@@ -82,8 +82,8 @@ Removes the startup launcher and optionally deletes saved reminder data.
 ### macOS
 
 ```zsh
-chmod +x create_desktop_shortcut_mac.zsh
-./create_desktop_shortcut_mac.zsh
+chmod +x macos/create_desktop_shortcut_mac.zsh
+./macos/create_desktop_shortcut_mac.zsh
 ```
 
 Creates `~/Desktop/Reminder Manager.app`. Uses the `.venv` Python if the setup script has been run, otherwise falls back to the system `python3`. Double-click the app to open the GUI with no terminal window.
@@ -96,7 +96,7 @@ Get a `.icns` file, open it in Preview → **⌘A** → **⌘C**, then select th
 ### Windows
 
 ```powershell
-.\create_desktop_shortcut_windows.ps1
+.\windows\create_desktop_shortcut_windows.ps1
 ```
 
 Creates `Reminder Manager.lnk` on the Desktop. Uses the `.venv` `pythonw.exe` if the setup script has been run (no console flash), otherwise falls back to the system Python.

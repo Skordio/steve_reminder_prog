@@ -7,16 +7,17 @@ set -e
 
 PLIST_LABEL="com.$(whoami).reminder-startup"
 PLIST_PATH="$HOME/Library/LaunchAgents/${PLIST_LABEL}.plist"
-SCRIPT_DIR="${0:A:h}"   # absolute path to the directory this .zsh file lives in
-STARTUP_SCRIPT="$SCRIPT_DIR/reminder_startup.py"
-VENV_DIR="$SCRIPT_DIR/.venv"
+SCRIPT_DIR="${0:A:h}"         # absolute path to macos/
+REPO_DIR="${SCRIPT_DIR:h}"    # repo root (parent of macos/)
+STARTUP_SCRIPT="$REPO_DIR/reminder_startup.py"
+VENV_DIR="$REPO_DIR/.venv"
 LOG_DIR="$HOME/Library/Logs/SteveReminderProg"
 
 # ── sanity check ───────────────────────────────────────────────────────────────
 
 if [[ ! -f "$STARTUP_SCRIPT" ]]; then
   echo "Error: reminder_startup.py not found at $STARTUP_SCRIPT"
-  echo "Make sure you run this script from the same folder as reminder_startup.py."
+  echo "Make sure the macos/ folder is inside the repo root."
   exit 1
 fi
 

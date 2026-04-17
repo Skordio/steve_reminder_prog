@@ -9,7 +9,8 @@
 $ErrorActionPreference = "Stop"
 
 $ScriptDir     = Split-Path -Parent $MyInvocation.MyCommand.Definition
-$VenvDir       = Join-Path $ScriptDir ".venv"
+$RepoDir       = Split-Path -Parent $ScriptDir   # repo root (parent of windows/)
+$VenvDir       = Join-Path $RepoDir ".venv"
 $StartupFolder = [System.Environment]::GetFolderPath("Startup")
 $BatchFile     = Join-Path $StartupFolder "run_reminders.bat"
 $DataDir       = Join-Path $env:APPDATA "SteveReminderProg"

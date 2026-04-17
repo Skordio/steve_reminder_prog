@@ -6,8 +6,9 @@ set -e
 
 PLIST_LABEL="com.$(whoami).reminder-startup"
 PLIST_PATH="$HOME/Library/LaunchAgents/${PLIST_LABEL}.plist"
-SCRIPT_DIR="${0:A:h}"
-VENV_DIR="$SCRIPT_DIR/.venv"
+SCRIPT_DIR="${0:A:h}"         # absolute path to macos/
+REPO_DIR="${SCRIPT_DIR:h}"    # repo root (parent of macos/)
+VENV_DIR="$REPO_DIR/.venv"
 LOG_DIR="$HOME/Library/Logs/SteveReminderProg"
 DATA_DIR="$HOME/SteveReminderProg"
 

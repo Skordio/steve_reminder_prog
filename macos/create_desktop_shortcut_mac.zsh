@@ -5,9 +5,10 @@
 
 set -e
 
-SCRIPT_DIR="${0:A:h}"
-GUI_SCRIPT="$SCRIPT_DIR/reminder_manager_gui.py"
-VENV_PYTHON="$SCRIPT_DIR/.venv/bin/python3"
+SCRIPT_DIR="${0:A:h}"         # absolute path to macos/
+REPO_DIR="${SCRIPT_DIR:h}"    # repo root (parent of macos/)
+GUI_SCRIPT="$REPO_DIR/reminder_manager_gui.py"
+VENV_PYTHON="$REPO_DIR/.venv/bin/python3"
 APP_NAME="Reminder Manager"
 APP_PATH="$HOME/Desktop/${APP_NAME}.app"
 
@@ -15,7 +16,7 @@ APP_PATH="$HOME/Desktop/${APP_NAME}.app"
 
 if [[ ! -f "$GUI_SCRIPT" ]]; then
   echo "Error: reminder_manager_gui.py not found at $GUI_SCRIPT"
-  echo "Make sure you run this script from the same folder."
+  echo "Make sure the macos/ folder is inside the repo root."
   exit 1
 fi
 
