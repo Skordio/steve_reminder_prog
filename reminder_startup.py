@@ -63,8 +63,7 @@ def show_reminder_window(reminder):
     # ── layout ────────────────────────────────────────────────────────────────
 
     # top banner
-    banner = tk.Frame(root, bg=ACCENT, height=6)
-    banner.pack(fill="x")
+    tk.Frame(root, bg=ACCENT, height=6).pack(fill="x")
 
     # "REMINDER" label
     tk.Label(root, text="REMINDER", font=("Segoe UI", 13, "bold"),
@@ -111,15 +110,16 @@ def _btn(parent, text, cmd, bg, fg, side):
               font=("Segoe UI", 12, "bold"),
               bg=bg, fg=fg, activebackground=bg, activeforeground=fg,
               relief="flat", padx=26, pady=12, cursor="hand2",
-              bd=0, highlightthickness=0, disabledforeground=fg).pack(side=side, padx=36)
+              bd=0, highlightthickness=0).pack(side=side, padx=36)
 
 
 # ── date-picker popup ──────────────────────────────────────────────────────────
 
 def show_date_picker(reminder):
     """
-    Ask user for the next remind date.
-    Returns a 'YYYY-MM-DD' string (never None — falls back to default).
+    Ask user for the next remind date, or to deactivate the reminder.
+    Returns {"date": "YYYY-MM-DD", "deactivate": False} (date is always set
+    even when deactivating, so the caller can save consistently).
     """
     interval    = reminder.get("interval_days", 7)
     default_dt  = date.today() + timedelta(days=interval)
@@ -131,24 +131,25 @@ def show_date_picker(reminder):
     root.configure(bg=BG)
     root.attributes("-topmost", True)
 
-    W, H = 420, 320
+    W, H = 420, 380
     sw, sh = root.winfo_screenwidth(), root.winfo_screenheight()
     root.geometry(f"{W}x{H}+{(sw - W) // 2}+{(sh - H) // 2}")
 
-    result = {"date": default_str}
+    result = {"date": default_str, "deactivate": False}
 
+    tk.Frame(root, bg=ACCENT, height=4).pack(fill="x")
     tk.Label(root, text="Set Next Reminder Date",
              font=("Segoe UI", 16, "bold"),
-             fg=FG, bg=BG, pady=20).pack()
+             fg=FG, bg=BG, pady=18).pack()
 
     tk.Label(root, text=f"Default: {default_str}  (today + {interval} days)",
              font=("Segoe UI", 10), fg=FG_DIM, bg=BG).pack()
 
     # ── try tkcalendar; fall back to plain entry ───────────────────────────────
     try:
-        from tkcalendar import DateEntry  # pip install tkcalendar
+        from tkcalendar import DateEntry
 
-        frame = tk.Frame(root, bg=BG, pady=22)
+        frame = tk.Frame(root, bg=BG, pady=18)
         frame.pack()
         cal = DateEntry(frame, width=14, background=ACCENT, foreground=FG,
                         normalbackground=BG_CARD, normalforeground=FG,
@@ -165,7 +166,7 @@ def show_date_picker(reminder):
 
     except ImportError:
         tk.Label(root, text="Enter date (YYYY-MM-DD):",
-                 font=("Segoe UI", 12), fg=FG, bg=BG, pady=16).pack()
+                 font=("Segoe UI", 12), fg=FG, bg=BG, pady=12).pack()
 
         entry_var = tk.StringVar(value=default_str)
         entry = tk.Entry(root, textvariable=entry_var,
@@ -186,19 +187,32 @@ def show_date_picker(reminder):
             except ValueError:
                 err.config(text="Invalid format — use YYYY-MM-DD")
 
+    def deactivate():
+        result["deactivate"] = True
+        root.destroy()
+
     def on_close():
-        root.destroy()   # result already holds default_str
+        root.destroy()   # result already holds defaults
 
     root.protocol("WM_DELETE_WINDOW", on_close)
 
+    # ── confirm button ─────────────────────────────────────────────────────────
     tk.Button(root, text="Confirm", command=confirm,
               font=("Segoe UI", 13, "bold"),
               bg=ACCENT, fg=BG, activebackground=ACCENT, activeforeground=BG,
               relief="flat", padx=30, pady=10, cursor="hand2",
-              bd=0, highlightthickness=0).pack(pady=18)
+              bd=0, highlightthickness=0).pack(pady=(12, 4))
+
+    # ── deactivate button ──────────────────────────────────────────────────────
+    tk.Button(root, text="Deactivate this reminder",
+              command=deactivate,
+              font=("Segoe UI", 10),
+              bg=BG_CARD, fg=BG, activebackground=BG_CARD, activeforeground=BG,
+              relief="flat", padx=16, pady=6, cursor="hand2",
+              bd=0, highlightthickness=0).pack(pady=(0, 12))
 
     root.mainloop()
-    return result["date"]
+    return result
 
 
 # ── main ───────────────────────────────────────────────────────────────────────
@@ -209,7 +223,8 @@ def main():
 
     due = [
         r for r in reminders
-        if datetime.strptime(r["remind_date"], "%Y-%m-%d").date() <= today
+        if r.get("activated", True)
+        and datetime.strptime(r["remind_date"], "%Y-%m-%d").date() <= today
     ]
 
     if not due:
@@ -219,10 +234,12 @@ def main():
         action = show_reminder_window(reminder)
 
         if action == "done":
-            new_date = show_date_picker(reminder)
+            result = show_date_picker(reminder)
             for r in reminders:
                 if r["id"] == reminder["id"]:
-                    r["remind_date"] = new_date
+                    r["remind_date"] = result["date"]
+                    if result["deactivate"]:
+                        r["activated"] = False
                     break
             save_reminders(reminders)
         # snooze → do nothing, will re-appear next startup

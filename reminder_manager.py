@@ -116,8 +116,14 @@ def screen_list(reminders):
     print("  " + "─" * (W - 2))
 
     for i, r in enumerate(reminders, 1):
+        active = r.get("activated", True)
         rd     = datetime.strptime(r["remind_date"], "%Y-%m-%d").date()
-        status = "*** DUE ***" if rd <= today else f"in {(rd - today).days}d"
+        if not active:
+            status = "inactive"
+        elif rd <= today:
+            status = "*** DUE ***"
+        else:
+            status = f"in {(rd - today).days}d"
         idays  = f"{r['interval_days']}d"
         print(f"  {i:<4} {r['name'][:23]:<24} {r['remind_date']:<13} {idays:<8} {status}")
 
@@ -142,11 +148,12 @@ def screen_add(reminders):
     interval_days = ask_int("Repeat every N days", default=7)
 
     reminder = {
-        "id":           str(uuid.uuid4()),
-        "name":         name,
-        "description":  description,
-        "remind_date":  remind_date,
+        "id":            str(uuid.uuid4()),
+        "name":          name,
+        "description":   description,
+        "remind_date":   remind_date,
         "interval_days": interval_days,
+        "activated":     True,
     }
     reminders.append(reminder)
     save_reminders(reminders)
@@ -169,10 +176,12 @@ def screen_view(reminders):
     r = reminders[idx]
     clear()
     header(f"Detail — {r['name']}")
+    active = r.get("activated", True)
     print(f"\n  Name         {r['name']}")
     print(f"  Description  {r['description'] or '(none)'}")
     print(f"  Next remind  {r['remind_date']}")
     print(f"  Interval     every {r['interval_days']} day(s)")
+    print(f"  Active       {'yes' if active else 'NO  (will not send reminders)'}")
     print(f"  ID           {r['id']}")
     pause()
 
@@ -201,6 +210,13 @@ def screen_edit(reminders):
 
     r["remind_date"]   = ask_date("Remind date", default=r["remind_date"])
     r["interval_days"] = ask_int("Repeat every N days", default=r["interval_days"])
+
+    current_active = r.get("activated", True)
+    toggle = ask_choice(
+        f"Active (currently {'yes' if current_active else 'no'})? Toggle",
+        ["y", "n"]
+    )
+    r["activated"] = (toggle == "y")
 
     save_reminders(reminders)
     print(f"\n  ✓ Reminder updated.")
@@ -293,7 +309,8 @@ def main():
         today     = date.today()
         due       = sum(
             1 for r in reminders
-            if datetime.strptime(r["remind_date"], "%Y-%m-%d").date() <= today
+            if r.get("activated", True)
+            and datetime.strptime(r["remind_date"], "%Y-%m-%d").date() <= today
         )
 
         clear()

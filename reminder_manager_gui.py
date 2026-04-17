@@ -19,7 +19,8 @@ BG_ROW   = "#0f3460"
 ACCENT   = "#e94560"
 FG       = "#ffffff"
 FG_DIM   = "#aaaaaa"
-FG_DUE   = "#ff6b6b"
+FG_DUE      = "#ff6b6b"
+FG_INACTIVE = "#555577"
 
 
 # ── data helpers ───────────────────────────────────────────────────────────────
@@ -177,6 +178,8 @@ def open_reminder_dialog(parent, existing=None):
             "description":   desc_var.get().strip(),
             "remind_date":   remind_date,
             "interval_days": interval,
+            # preserve activated state when editing; default True for new
+            "activated":     existing.get("activated", True) if is_edit else True,
         }
         dlg.destroy()
 
@@ -259,8 +262,9 @@ class ReminderManagerApp(tk.Tk):
         self._tree.pack(side="left", fill="both", expand=True)
         sb.pack(side="right", fill="y")
 
-        self._tree.tag_configure("due",    foreground=FG_DUE)
-        self._tree.tag_configure("normal", foreground=FG)
+        self._tree.tag_configure("due",      foreground=FG_DUE)
+        self._tree.tag_configure("normal",   foreground=FG)
+        self._tree.tag_configure("inactive", foreground=FG_INACTIVE)
 
         self._tree.bind("<Double-1>", lambda _: self.edit_reminder())
         self._tree.bind("<Delete>",   lambda _: self.delete_reminder())
@@ -269,10 +273,11 @@ class ReminderManagerApp(tk.Tk):
         btn_bar = tk.Frame(self, bg=BG, pady=12)
         btn_bar.pack(fill="x", padx=20)
 
-        styled_button(btn_bar, "+ Add",    self.add_reminder,    primary=True).pack(side="left", padx=(0, 8))
-        styled_button(btn_bar, "✎ Edit",   self.edit_reminder                ).pack(side="left", padx=(0, 8))
-        styled_button(btn_bar, "✕ Delete", self.delete_reminder              ).pack(side="left")
-        styled_button(btn_bar, "↺ Refresh", self.refresh                     ).pack(side="right")
+        styled_button(btn_bar, "+ Add",      self.add_reminder,    primary=True).pack(side="left", padx=(0, 8))
+        styled_button(btn_bar, "✎ Edit",     self.edit_reminder               ).pack(side="left", padx=(0, 8))
+        styled_button(btn_bar, "✕ Delete",   self.delete_reminder             ).pack(side="left", padx=(0, 8))
+        styled_button(btn_bar, "⏸ Toggle",   self.toggle_reminder             ).pack(side="left")
+        styled_button(btn_bar, "↺ Refresh",  self.refresh                     ).pack(side="right")
 
     # ── data & display ─────────────────────────────────────────────────────────
 
@@ -284,15 +289,19 @@ class ReminderManagerApp(tk.Tk):
         due_cnt = 0
 
         for r in self._reminders:
+            active = r.get("activated", True)
             rd     = datetime.strptime(r["remind_date"], "%Y-%m-%d").date()
-            is_due = rd <= today
-            if is_due:
+            if not active:
+                status = "inactive"
+                tag    = "inactive"
+            elif rd <= today:
                 due_cnt += 1
                 status = "DUE"
+                tag    = "due"
             else:
                 status = f"in {(rd - today).days}d"
+                tag    = "normal"
 
-            tag = "due" if is_due else "normal"
             self._tree.insert("", "end", iid=r["id"], tags=(tag,),
                                values=(
                                    r["name"],
@@ -339,6 +348,24 @@ class ReminderManagerApp(tk.Tk):
             save_reminders(self._reminders)
             self.refresh()
             self._tree.selection_set(result["id"])
+
+    def toggle_reminder(self):
+        reminder = self._selected_reminder()
+        if not reminder:
+            messagebox.showinfo("Toggle", "Select a reminder first.", parent=self)
+            return
+        currently_active = reminder.get("activated", True)
+        action = "Deactivate" if currently_active else "Activate"
+        if messagebox.askyesno(action,
+                                f"{action} \"{reminder['name']}\"?",
+                                parent=self):
+            for r in self._reminders:
+                if r["id"] == reminder["id"]:
+                    r["activated"] = not currently_active
+                    break
+            save_reminders(self._reminders)
+            self.refresh()
+            self._tree.selection_set(reminder["id"])
 
     def delete_reminder(self):
         reminder = self._selected_reminder()
