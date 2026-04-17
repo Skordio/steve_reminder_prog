@@ -9,6 +9,8 @@ No third-party dependencies required (tkinter ships with Python on Windows). `tk
 | `reminder_manager.py` | Interactive **terminal** UI — create, edit, delete reminders |
 | `reminder_manager_gui.py` | Interactive **GUI** UI — same features in a windowed interface |
 | `reminder_startup.py` | Startup script — checks due reminders and shows popup windows |
+| `create_desktop_shortcut_mac.zsh` | Creates a `Reminder Manager.app` on the macOS Desktop |
+| `create_desktop_shortcut_windows.ps1` | Creates a `Reminder Manager` shortcut on the Windows Desktop |
 
 ## Quick start
 
@@ -77,36 +79,30 @@ Removes the startup launcher and optionally deletes saved reminder data.
 
 ## Desktop shortcut for the GUI manager
 
-### Windows
+### macOS
 
-1. Right-click your Desktop → **New → Shortcut**
-2. For the target, enter (update the path to match your install location):
-   ```
-   pythonw "C:\full\path\to\reminder_manager_gui.py"
-   ```
-3. Click **Next**, give it a name (e.g. `Reminder Manager`), click **Finish**
+```zsh
+chmod +x create_desktop_shortcut_mac.zsh
+./create_desktop_shortcut_mac.zsh
+```
 
-> Using `pythonw` instead of `python` prevents a console window from flashing when you open the shortcut.
+Creates `~/Desktop/Reminder Manager.app`. Uses the `.venv` Python if the setup script has been run, otherwise falls back to the system `python3`. Double-click the app to open the GUI with no terminal window.
 
 **Optional — set a custom icon:**
-Right-click the shortcut → **Properties → Change Icon**, then browse to any `.ico` file you like.
+Get a `.icns` file, open it in Preview → **⌘A** → **⌘C**, then select the `.app` in Finder → **⌘I** → click the icon in the top-left → **⌘V**.
 
 ---
 
-### macOS
+### Windows
 
-1. Open **Script Editor** (search it in Spotlight)
-2. Paste the following, updating the path to match your install location:
-   ```applescript
-   do shell script "/full/path/to/.venv/bin/python3 /full/path/to/reminder_manager_gui.py &> /dev/null &"
-   ```
-3. Go to **File → Export**, set **File Format** to **Application**, and save it to your Desktop (e.g. `Reminder Manager.app`)
-4. Double-clicking that `.app` file will launch the GUI with no terminal window
+```powershell
+.\create_desktop_shortcut_windows.ps1
+```
 
-> If you haven't run the setup script (and therefore have no `.venv`), replace the python path with the output of `which python3`.
+Creates `Reminder Manager.lnk` on the Desktop. Uses the `.venv` `pythonw.exe` if the setup script has been run (no console flash), otherwise falls back to the system Python.
 
 **Optional — set a custom icon:**
-Get a `.icns` file, open it in Preview, press **⌘A** then **⌘C**, then select the `.app` in Finder, press **⌘I** to open its info panel, click the icon in the top-left, and press **⌘V**.
+Right-click the shortcut → **Properties → Change Icon**, then browse to any `.ico` file you like.
 
 ---
 
