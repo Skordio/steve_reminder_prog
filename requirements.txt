@@ -1,0 +1,5 @@
+# Required: none (tkinter ships with Python on Windows)
+#
+# Optional — installs a proper calendar date-picker in the "Done" flow.
+# Without it the program falls back to a plain text entry box.
+tkcalendar>=1.6
