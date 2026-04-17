@@ -75,6 +75,41 @@ Creates `run_reminders.bat` in your Startup folder (`shell:startup`). Uses `pyth
 
 Removes the startup launcher and optionally deletes saved reminder data.
 
+## Desktop shortcut for the GUI manager
+
+### Windows
+
+1. Right-click your Desktop → **New → Shortcut**
+2. For the target, enter (update the path to match your install location):
+   ```
+   pythonw "C:\full\path\to\reminder_manager_gui.py"
+   ```
+3. Click **Next**, give it a name (e.g. `Reminder Manager`), click **Finish**
+
+> Using `pythonw` instead of `python` prevents a console window from flashing when you open the shortcut.
+
+**Optional — set a custom icon:**
+Right-click the shortcut → **Properties → Change Icon**, then browse to any `.ico` file you like.
+
+---
+
+### macOS
+
+1. Open **Script Editor** (search it in Spotlight)
+2. Paste the following, updating the path to match your install location:
+   ```applescript
+   do shell script "/full/path/to/.venv/bin/python3 /full/path/to/reminder_manager_gui.py &> /dev/null &"
+   ```
+3. Go to **File → Export**, set **File Format** to **Application**, and save it to your Desktop (e.g. `Reminder Manager.app`)
+4. Double-clicking that `.app` file will launch the GUI with no terminal window
+
+> If you haven't run the setup script (and therefore have no `.venv`), replace the python path with the output of `which python3`.
+
+**Optional — set a custom icon:**
+Get a `.icns` file, open it in Preview, press **⌘A** then **⌘C**, then select the `.app` in Finder, press **⌘I** to open its info panel, click the icon in the top-left, and press **⌘V**.
+
+---
+
 ## How the popup works
 
 When `reminder_startup.py` runs it checks every reminder whose **remind date ≤ today** and shows a window for each one:
