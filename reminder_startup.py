@@ -9,7 +9,6 @@ import sys
 from datetime import date, datetime, timedelta
 from pathlib import Path
 import tkinter as tk
-from tkinter import font as tkfont
 
 DATA_FILE = Path(os.environ.get("APPDATA", Path.home())) / "SteveReminderProg" / "reminders.json"
 

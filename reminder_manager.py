@@ -7,7 +7,7 @@ import json
 import os
 import time
 import uuid
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from pathlib import Path
 
 DATA_FILE = Path(os.environ.get("APPDATA", Path.home())) / "SteveReminderProg" / "reminders.json"

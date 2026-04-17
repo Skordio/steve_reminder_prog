@@ -290,10 +290,8 @@ class ReminderManagerApp(tk.Tk):
             if is_due:
                 due_cnt += 1
                 status = "DUE"
-                days_lbl = ""
             else:
-                status   = f"in {(rd - today).days}d"
-                days_lbl = ""
+                status = f"in {(rd - today).days}d"
 
             tag = "due" if is_due else "normal"
             self._tree.insert("", "end", iid=r["id"], tags=(tag,),
