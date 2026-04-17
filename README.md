@@ -1,18 +1,23 @@
 # Reminder App
 
-Two Python scripts — no third-party dependencies required (tkinter ships with Python on Windows).
+No third-party dependencies required (tkinter ships with Python on Windows). `tkcalendar` is optional for a nicer date picker.
 
 ## Files
 
 | File | Purpose |
 |------|---------|
-| `reminder_manager.py` | Interactive terminal UI — create, edit, delete reminders |
+| `reminder_manager.py` | Interactive **terminal** UI — create, edit, delete reminders |
+| `reminder_manager_gui.py` | Interactive **GUI** UI — same features in a windowed interface |
 | `reminder_startup.py` | Startup script — checks due reminders and shows popup windows |
 
 ## Quick start
 
 ```
+# Terminal interface
 python reminder_manager.py
+
+# GUI interface
+python reminder_manager_gui.py
 ```
 
 Use the menu to add reminders. Each reminder has:
