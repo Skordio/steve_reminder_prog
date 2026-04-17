@@ -98,9 +98,9 @@ def show_reminder_window(reminder):
     btn_row.pack(fill="x")
 
     _btn(btn_row, "Snooze  (remind next startup)", snooze,
-         bg=BG_CARD, fg=FG, side="left")
+         bg=BG_CARD, fg=BG, side="left")
     _btn(btn_row, "  Done  ✓  ", done,
-         bg=ACCENT, fg=FG, side="right")
+         bg=ACCENT, fg=BG, side="right")
 
     root.mainloop()
     return result["action"]
@@ -111,7 +111,7 @@ def _btn(parent, text, cmd, bg, fg, side):
               font=("Segoe UI", 12, "bold"),
               bg=bg, fg=fg, activebackground=bg, activeforeground=fg,
               relief="flat", padx=26, pady=12, cursor="hand2",
-              bd=0, highlightthickness=0).pack(side=side, padx=36)
+              bd=0, highlightthickness=0, disabledforeground=fg).pack(side=side, padx=36)
 
 
 # ── date-picker popup ──────────────────────────────────────────────────────────
@@ -193,7 +193,7 @@ def show_date_picker(reminder):
 
     tk.Button(root, text="Confirm", command=confirm,
               font=("Segoe UI", 13, "bold"),
-              bg=ACCENT, fg=FG, activebackground=ACCENT, activeforeground=FG,
+              bg=ACCENT, fg=BG, activebackground=ACCENT, activeforeground=BG,
               relief="flat", padx=30, pady=10, cursor="hand2",
               bd=0, highlightthickness=0).pack(pady=18)
 
