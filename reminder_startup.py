@@ -97,7 +97,7 @@ def show_reminder_window(reminder):
     btn_row.pack(fill="x")
 
     _btn(btn_row, "Snooze  (remind next startup)", snooze,
-         bg=BG_CARD, fg=BG, side="left")
+         bg=BG_CARD, fg=FG, side="left")
     _btn(btn_row, "  Done  ✓  ", done,
          bg=ACCENT, fg=BG, side="right")
 
@@ -207,7 +207,7 @@ def show_date_picker(reminder):
     tk.Button(root, text="Deactivate this reminder",
               command=deactivate,
               font=("Segoe UI", 10),
-              bg=BG_CARD, fg=BG, activebackground=BG_CARD, activeforeground=BG,
+              bg=BG_CARD, fg=FG, activebackground=BG_CARD, activeforeground=FG,
               relief="flat", padx=16, pady=6, cursor="hand2",
               bd=0, highlightthickness=0).pack(pady=(0, 12))
 

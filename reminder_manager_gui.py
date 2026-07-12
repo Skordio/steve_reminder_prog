@@ -75,9 +75,10 @@ def make_date_entry(parent, default_date):
 
 def styled_button(parent, text, command, primary=False, **kw):
     bg = ACCENT if primary else BG_ROW
+    fg = BG if primary else FG
     return tk.Button(parent, text=text, command=command,
                      font=("Segoe UI", 10, "bold"),
-                     bg=bg, fg=BG, activebackground=bg, activeforeground=BG,
+                     bg=bg, fg=fg, activebackground=bg, activeforeground=fg,
                      relief="flat", bd=0, highlightthickness=0,
                      padx=16, pady=7, cursor="hand2", **kw)
 
